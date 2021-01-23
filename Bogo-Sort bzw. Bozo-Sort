@@ -1,0 +1,90 @@
+// PAD1 - Praktikum 4
+// Aufgabe 15
+// 762199
+
+#include <iostream>
+#include <ctime>
+#include <random>
+using namespace std;
+
+const int AnzhalElemente = 11;   //Feldgröße
+
+// Überprüft ob Array sortiert ist oder nicht
+bool is_sorted(int array[], int n)
+{
+   while (--n >= 1)
+   {
+      if (array[n] < array[n-1])
+      {
+         return false;
+      }
+   }
+   return true;
+}
+
+// Um eine Vorsortierung des Arrays zu generieren
+void shuffle(int array[], int n)
+{
+   int temp, r;
+   for(int i=0; i < n; i++)
+   {
+      temp = array[i];
+      r = rand() % n;
+      array[i] = array[r];
+      array[r] = temp;
+   }
+}
+
+void bogoSort(int array[], int n)
+{
+   while (!is_sorted(array, n)) //Solange es NICHT sortiert ist -> Loop
+   {
+      shuffle(array, n);  //Springt in den Shuffle
+   }
+}
+
+int main()
+{
+    int array[AnzhalElemente]={0};    //Feld
+
+    random_device seed;     // Ausgangsbasis fuer Zufallszahlen
+    mt19937 engine(seed());     // Zufallsgenerator Mersenne Twister
+    uniform_int_distribution<long> values(0,1000);   // Verteilung von Zahlen im Bereich
+
+    for (int i=0; i<AnzhalElemente; i++)
+    {
+        array[i] = values(engine);  //Füllt Array mit Zufallswerten
+    }
+
+    for(int i=0; i<AnzhalElemente; i++) //Unsortierte Ausgabe des Arrays
+       {
+           cout << array[i] << " ";
+       }
+
+    cout << endl << endl;
+
+
+    // BogoSort - Ausgabe der Messung
+    time_t start=time(NULL); //Startzeit in Sekunden
+
+    bogoSort(array,AnzhalElemente); //Array wird sortiert
+
+    time_t ende=time(NULL); //Endzeit in Sekunden
+
+
+    for(int i=0; i<AnzhalElemente; i++) //Ausgabe des sortierten Arrays
+       {
+           cout << array[i] << " ";
+       }
+
+    int size1 = sizeof(array) / sizeof(array[0]);
+
+    cout << endl << endl;
+    cout << "BogoSort Messung: " << endl;
+    cout << "Dauer: " << ende-start << " Sekunden" << endl;
+    cout << "Anzahl der Zufallswerte: " << size1 << endl;
+    cout << endl;
+
+    return 0;
+}
+
